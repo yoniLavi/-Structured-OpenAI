@@ -2,7 +2,7 @@
 
 ## Background
 
-This repo, demonstrates a concise way of utilizing the new Function Calling
+This repo demonstrates a concise way of utilizing the new Function Calling
 capability of OpenAI's API, as a way to create complex prompts in a structured
 manner, without any string templating.
 
@@ -18,7 +18,7 @@ representing the output properties you want in [JSON Schema format](https://json
 
 ## Example
 
-In this example, we create a function to analyze any kind of sequence
+In this example we create a function to analyze any kind of sequence
 and predict some possible next values.
 
 We then use pandas to apply the function to a column and output a new dataframe.
@@ -33,7 +33,7 @@ from structured_openai import generate_structured_openai_call
 analyze_sequence = generate_structured_openai_call(
     "Analyze this sequence of items",
     {
-        "description": {
+        "sequence_description": {
             "type": "string",
             "description": "What is the sequence about?",
         },
@@ -47,7 +47,7 @@ analyze_sequence = generate_structured_openai_call(
 )
 
 
-# An example sequence as a dataframe column
+# Example sequences as a dataframe column
 df = pd.DataFrame({'sequences': [
     "Apple, Banana, Cherry",
     "Tuesday, Wednesday",
@@ -62,7 +62,7 @@ response_df = pd.DataFrame(df['sequences'].apply(analyze_sequence).tolist())
 ```
 
 The above will generate an output of the following form:
-| original_input            | description                                                                                                 | next_several_items                                       |
+| original_input            | sequence_description                                                                                | next_several_items                                       |
 |---------------------------|-------------------------------------------------------------------------------------------------------------|----------------------------------------------------------|
 | Apple, Banana, Cherry   | This sequence consists of fruits in alphabetical order.                                                     | ['Date', 'Elderberry', 'Fig']                          |
 | Tuesday, Wednesday      | This sequence represents the days of the week starting from Tuesday and continuing to Wednesday.            | ['Thursday', 'Friday', 'Saturday', 'Sunday', 'Monday'] |
