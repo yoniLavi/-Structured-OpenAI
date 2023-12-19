@@ -2,12 +2,11 @@ import json
 import os
 from typing import Callable
 
-from dotenv import load_dotenv, find_dotenv
-import openai
+from dotenv import load_dotenv
+from openai import OpenAI
 
-_ = load_dotenv(find_dotenv())
-openai.api_key = os.getenv("OPENAI_API_KEY")
-
+_ = load_dotenv()
+OPENAI_CLIENT = OpenAI()
 
 def generate_structured_openai_call(
     prompt: str,
@@ -40,7 +39,7 @@ def generate_structured_openai_call(
         } | response_properties
 
     def inner_function(user_input: str) -> dict:
-        completion = openai.ChatCompletion.create(
+        completion = OPENAI_CLIENT.chat.completions.create(
             model=model,
             messages=[
                 {"role": "system", "content": prompt},
@@ -62,9 +61,8 @@ def generate_structured_openai_call(
             ],
             function_call={"name": "structured_response"},
         )
-        response = completion.choices[0].message
-        arguments = response.to_dict()["function_call"]["arguments"]
-        return json.loads(arguments)
+        message_response = completion.choices[0].message
+        return json.loads(message_response.function_call.arguments)
 
     return inner_function
 
